@@ -10,7 +10,10 @@ class Validator {
     init() {
         this.applyStyle();
         this.setPattern();
-        this.elementsForm.forEach(elem => elem.addEventListener('change', this.checkIt.bind(this)));
+        this.elementsForm.forEach(elem => {
+            elem.addEventListener('change', this.checkIt.bind(this));
+            elem.addEventListener('input', this.checkIt.bind(this));
+        });
         this.form.addEventListener('submit', e => {
             this.elementsForm.forEach(elem => this.checkIt({target: elem}));
             if (this.error.size) {
@@ -66,11 +69,15 @@ class Validator {
     showError(elem) {
         elem.classList.add('error');
         elem.classList.remove('success');
+        const hint = document.getElementById(`hint-${elem.name}`);
+        if (hint) hint.classList.add('visible');
     }
 
     showSuccess(elem) {
         elem.classList.add('success');
         elem.classList.remove('error');
+        const hint = document.getElementById(`hint-${elem.name}`);
+        if (hint) hint.classList.remove('visible');
     }
 
     applyStyle() {

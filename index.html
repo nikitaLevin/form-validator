@@ -4,53 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validator</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <form id="myform">
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required><br><br>
+    <div class="form-container">
+        <h2>Sign Up</h2>
+        <form id="myform">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email" placeholder="Enter your email" required>
+                    <span class="hint" id="hint-email">Please enter a valid email</span>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create password" required>
+                    <span class="hint" id="hint-password">Min 8 characters, at least 1 number and 1 uppercase letter</span>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="phone" placeholder="Enter your phone" required>
+                    <span class="hint" id="hint-phone">Please enter a valid phone number</span>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
+                    <span class="hint" id="hint-confirmPassword">Passwords do not match</span>
+                </div>
+            </div>
+            <div class="form-footer">
+                <button type="submit">Submit Now</button>
+            </div>
+        </form>
+    </div>
 
-        <label for="phone">Phone:</label>
-        <input type="text" id="phone" name="phone" required><br><br>
+    <script src="plugins/validator/validator.js"></script>
+    <script>
+        const valid = new Validator({
+            selector: '#myform',
+            pattern: {
+                phone: '',
+                email: '',
+                password: '',
+            },
+            method: {
+                'email': [['notEmpty'], ['email']],
+                'phone': [['notEmpty'], ['pattern', 'phone']],
+                'password': [['notEmpty'], ['password']],
+                'confirmPassword': [['notEmpty'], ['confirmPassword']]
+            }
+        });
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required><br><br>
-
-        <button type="submit">Submit</button>
-    </form>
+        valid.init();
+    </script>
 </body>
-<script src="plugins/validator/validator.js"></script>
-<script>
-    const valid = new Validator({
-        selector: '#myform',
-        pattern: {
-            phone: '',
-            email: '',
-            password: '',
-        },
-        method: {
-            'email': [
-                ['notEmpty'],
-                ['email']
-            ],
-            'phone': [
-                ['notEmpty'],
-                ['pattern', 'phone']
-            ],
-            'password': [
-                ['notEmpty'],
-                ['password']
-            ],
-            'confirmPassword': [
-                ['notEmpty'],
-                ['confirmPassword']
-            ]
-        }
-    });
-
-    valid.init();
-</script>
 </html>
