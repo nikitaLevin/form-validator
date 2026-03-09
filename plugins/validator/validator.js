@@ -10,7 +10,10 @@ class Validator {
     init() {
         this.applyStyle();
         this.setPattern();
-        this.elementsForm.forEach(elem => elem.addEventListener('change', this.checkIt.bind(this)));
+        this.elementsForm.forEach(elem => {
+            elem.addEventListener('change', this.checkIt.bind(this));
+            elem.addEventListener('input', this.checkIt.bind(this));
+        });
         this.form.addEventListener('submit', e => {
             this.elementsForm.forEach(elem => this.checkIt({target: elem}));
             if (this.error.size) {
@@ -20,18 +23,23 @@ class Validator {
     }
 
     isValid(elem) {
+        const form = this.form;
         const validatorMethod = {
             notEmpty(elem) {
-                if (elem.value.trim() === '') {
-                    return false;
-                }
-                return true;
+                return elem.value.trim() !== '';
             },
             pattern(elem, pattern) {
                 return pattern.test(elem.value);
             },
             email(elem) {
                 return /\S+@\S+\.\S+/.test(elem.value);
+            },
+            password(elem) {
+                return /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,}$/.test(elem.value);
+            },
+            confirmPassword(elem) {
+                const password = form.querySelector('[name="password"]');
+                return password && elem.value === password.value;
             }
         };
 
@@ -41,7 +49,7 @@ class Validator {
                 return methods.every(item => validatorMethod[item[0]](elem, this.pattern[item[1]]));
             }
         } else {
-            console.warn('Необходимо передать id полей ввода и методы проверки этих полей');
+            console.warn('Please provide input field names and their validation methods');
         }
 
         return true;
@@ -61,11 +69,15 @@ class Validator {
     showError(elem) {
         elem.classList.add('error');
         elem.classList.remove('success');
+        const hint = document.getElementById(`hint-${elem.name}`);
+        if (hint) hint.classList.add('visible');
     }
 
     showSuccess(elem) {
         elem.classList.add('success');
         elem.classList.remove('error');
+        const hint = document.getElementById(`hint-${elem.name}`);
+        if (hint) hint.classList.remove('visible');
     }
 
     applyStyle() {
@@ -83,10 +95,13 @@ class Validator {
 
     setPattern() {
         if (!this.pattern.phone) {
-            this.pattern.phone = /^\+972-?\d{1,2}-?\d{3}-?\d{4}$/;
+            this.pattern.phone = /^(\+972-?\d{1,2}-?\d{3}-?\d{4}|\+?[\d\s\-().]{7,15})$/;
         }
         if (!this.pattern.email) {
             this.pattern.email = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        }
+        if (!this.pattern.password) {
+            this.pattern.password = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,}$/;
         }
     }
 }
