@@ -20,18 +20,23 @@ class Validator {
     }
 
     isValid(elem) {
+        const form = this.form;
         const validatorMethod = {
             notEmpty(elem) {
-                if (elem.value.trim() === '') {
-                    return false;
-                }
-                return true;
+                return elem.value.trim() !== '';
             },
             pattern(elem, pattern) {
                 return pattern.test(elem.value);
             },
             email(elem) {
                 return /\S+@\S+\.\S+/.test(elem.value);
+            },
+            password(elem) {
+                return /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,}$/.test(elem.value);
+            },
+            confirmPassword(elem) {
+                const password = form.querySelector('[name="password"]');
+                return password && elem.value === password.value;
             }
         };
 
@@ -41,7 +46,7 @@ class Validator {
                 return methods.every(item => validatorMethod[item[0]](elem, this.pattern[item[1]]));
             }
         } else {
-            console.warn('Необходимо передать id полей ввода и методы проверки этих полей');
+            console.warn('Please provide input field names and their validation methods');
         }
 
         return true;
@@ -83,10 +88,13 @@ class Validator {
 
     setPattern() {
         if (!this.pattern.phone) {
-            this.pattern.phone = /^\+972-?\d{1,2}-?\d{3}-?\d{4}$/;
+            this.pattern.phone = /^(\+972-?\d{1,2}-?\d{3}-?\d{4}|\+?[\d\s\-().]{7,15})$/;
         }
         if (!this.pattern.email) {
             this.pattern.email = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        }
+        if (!this.pattern.password) {
+            this.pattern.password = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,}$/;
         }
     }
 }
