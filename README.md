@@ -4,10 +4,11 @@ A lightweight and reusable JavaScript form validator plugin.
 
 ## Features
 - 📧 Email format validation
-- 📱 Phone number validation with custom regex patterns
-- 🟢 Green border — valid input
-- 🔴 Red border — invalid input
-- 🧹 Clears form on successful submit
+- 📱 Phone number validation (Israel +972 and international formats)
+- 🔒 Password validation — min 8 characters, at least 1 number and 1 uppercase letter
+- 🔁 Confirm password — checks if passwords match
+- 💬 Live validation hints — feedback on every keystroke
+- 🟢 Success/error border colors
 - 🔌 Reusable — can be connected to any form via selector
 
 ## Usage
@@ -17,10 +18,13 @@ const valid = new Validator({
     pattern: {
         phone: '',
         email: '',
+        password: '',
     },
     method: {
+        'email': [['notEmpty'], ['email']],
         'phone': [['notEmpty'], ['pattern', 'phone']],
-        'email': [['notEmpty'], ['email']]
+        'password': [['notEmpty'], ['password']],
+        'confirmPassword': [['notEmpty'], ['confirmPassword']]
     }
 });
 
@@ -29,6 +33,7 @@ valid.init();
 
 ## Tech Stack
 - HTML
+- CSS
 - JavaScript
 
 ## Getting Started
