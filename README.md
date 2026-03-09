@@ -12,3 +12,25 @@ A lightweight and reusable JavaScript form validator plugin.
 
 ## Usage
 ```javascript
+const valid = new Validator({
+    selector: '#myform',
+    pattern: {
+        phone: '',
+        email: '',
+    },
+    method: {
+        'phone': [['notEmpty'], ['pattern', 'phone']],
+        'email': [['notEmpty'], ['email']]
+    }
+});
+
+valid.init();
+```
+
+## Tech Stack
+- HTML
+- JavaScript
+
+## Getting Started
+
+Just open `index.html` in your browser — no installation needed.
